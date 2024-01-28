@@ -38,13 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - distro: rockylinux8
-            playbook: converge.yml
-          - distro: ubuntu2204
-            playbook: converge.yml
-          - distro: debian12
-            playbook: converge.yml
+        distro:
+          - rockylinux8
+          - ubuntu2204
+          - debian12
 
     steps:
       - name: Check out the codebase.
