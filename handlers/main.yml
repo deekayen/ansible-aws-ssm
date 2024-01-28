@@ -1,6 +1,6 @@
 ---
 
-- name: restart amazon-ssm-agent
+- name: Restart amazon-ssm-agent
   ansible.builtin.service:
     name: amazon-ssm-agent
     state: restarted

@@ -17,17 +17,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: centos7
-            playbook: converge.yml
           - distro: centos8
-            playbook: converge.yml
-          - distro: ubuntu2004
             playbook: converge.yml
           - distro: ubuntu2204
             playbook: converge.yml
-          - distro: debian10
-            playbook: converge.yml
-          - distro: debian11
+          - distro: debian12
             playbook: converge.yml
 
     steps:

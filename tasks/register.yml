@@ -12,5 +12,5 @@
   tags:
     - skip_ansible_lint
     - register_ssm_agent
-  notify: restart amazon-ssm-agent
+  notify: Restart amazon-ssm-agent
   when: not stat_result.stat.exists

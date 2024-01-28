@@ -54,7 +54,8 @@
   until: install_result is success
   when: ansible_os_family == "Debian"
 
-- include_tasks: register.yml
+- name: Register instance with Systems Manager.
+  ansible.builtin.include_tasks: register.yml
   tags:
     - register_ssm_agent
   when:
