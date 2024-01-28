@@ -1,6 +1,9 @@
 ---
+role_name_check: 1
 dependency:
   name: galaxy
+  options:
+    ignore-errors: true
 driver:
   name: docker
 lint: |
@@ -8,10 +11,11 @@ lint: |
   flake8
 platforms:
   - name: instance
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-centos8}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-rockylinux8}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    cgroupns_mode: host
     privileged: true
     pre_build_image: true
 provisioner:
