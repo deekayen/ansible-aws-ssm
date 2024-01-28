@@ -20,7 +20,7 @@ jobs:
         distro:
           - rockylinux8
           - ubuntu2204
-          - debian12
+          - debian11
 
     steps:
       - name: Check out the codebase.
