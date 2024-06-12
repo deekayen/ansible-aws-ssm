@@ -4,6 +4,7 @@ url: amd64
 disable_gpg_check: false
 gpg_key_url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2bc7c7c267bbd505eaa491e6dd81a61756baa549
 gpg_key_fingerprint: 2bc7c7c267bbd505eaa491e6dd81a61756baa549
+aws_ssm_agent_version: latest
 # aws_ssm_activation_code:
 # aws_ssm_activation_id:
 # aws_ssm_ec2_region: "{{ ec2_region }}"

@@ -23,7 +23,7 @@
 
 - name: Install RPM file for Redhat family.
   ansible.builtin.yum:
-    name: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_{{ url }}/amazon-ssm-agent.rpm"
+    name: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/{{ aws_ssm_agent_version }}/linux_{{ url }}/amazon-ssm-agent.rpm"
     disable_gpg_check: "{{ disable_gpg_check }}"
     state: present
   tags:
@@ -45,7 +45,7 @@
 
 - name: Install deb file for Debian family.
   ansible.builtin.apt:
-    deb: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_{{ url }}/amazon-ssm-agent.deb"
+    deb: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/{{ aws_ssm_agent_version }}/debian_{{ url }}/amazon-ssm-agent.deb"
   notify: restart amazon-ssm-agent
   tags:
     - install_ssm_agent

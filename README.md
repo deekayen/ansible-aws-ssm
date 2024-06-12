@@ -23,6 +23,7 @@ url: amd64
 disable_gpg_check: false
 gpg_key_url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2bc7c7c267bbd505eaa491e6dd81a61756baa549
 gpg_key_fingerprint: 2bc7 c7c2 67bb d505 eaa4  91e6 dd81 a617 56ba a549
+aws_ssm_agent_version: latest
 ```
 
 For installation in [Raspbian](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-manual-agent-install.html#agent-install-raspbianjessie), please find the activation code and id before using this role
@@ -49,6 +50,7 @@ Amazon only keeps a signing key for a year or two. When this role is outdated an
          - role: deekayen.aws-ssm
            vars:
               gpg_key_url: https://keys.openpgp.org/vks/v1/by-fingerprint/2BC7C7C267BBD505EAA491E6DD81A61756BAA549
+              aws_ssm_agent_version: 3.0.1390.0
               aws_ssm_activation_code: activationcode_here
               aws_ssm_activation_id: myactivation_id
               aws_ssm_ec2_region: us-east-1
