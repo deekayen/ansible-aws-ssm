@@ -1,0 +1,66 @@
+---
+argument_specs:
+  main:
+    short_description: Install AWS EC2 Systems Manager (SSM) agent.
+    description:
+      - Imports Amazon's package signing key, installs the amazon-ssm-agent
+        package from the official S3 downloads bucket, and optionally
+        registers the node as a managed instance using a Systems Manager
+        hybrid activation.
+    author:
+      - David Norman
+    options:
+      url:
+        type: str
+        default: amd64
+        choices:
+          - amd64
+          - "386"
+          - arm
+          - arm64
+        description: >-
+          Architecture component of the download URL for the
+          amazon-ssm-agent package. Automatically switched to 386 on 32-bit
+          userspace hosts.
+
+      disable_gpg_check:
+        type: bool
+        default: false
+        description: >-
+          Disable GPG signature checking when installing the RPM on
+          RedHat-family hosts.
+
+      gpg_key_url:
+        type: str
+        default: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2bc7c7c267bbd505eaa491e6dd81a61756baa549"
+        description: URL of Amazon's package signing public key.
+
+      gpg_key_fingerprint:
+        type: str
+        default: 2bc7c7c267bbd505eaa491e6dd81a61756baa549
+        description: >-
+          Full fingerprint of Amazon's package signing key, used to verify
+          the imported key.
+
+      aws_ssm_activation_code:
+        type: str
+        required: false
+        description: >-
+          Systems Manager hybrid activation code. When set together with
+          aws_ssm_activation_id, the node is registered as a managed
+          instance.
+
+      aws_ssm_activation_id:
+        type: str
+        required: false
+        description: >-
+          Systems Manager hybrid activation ID. When set together with
+          aws_ssm_activation_code, the node is registered as a managed
+          instance.
+
+      aws_ssm_ec2_region:
+        type: str
+        required: false
+        description: >-
+          AWS region used when registering the managed instance. Required
+          when aws_ssm_activation_code and aws_ssm_activation_id are set.

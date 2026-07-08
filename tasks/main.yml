@@ -1,4 +1,8 @@
 ---
+- name: Validate role variables.
+  ansible.builtin.import_tasks: assert.yml
+  tags:
+    - always
 
 - name: Change URL destination for 32bit arch.
   ansible.builtin.set_fact:
@@ -22,7 +26,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: Install RPM file for Redhat family.
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_{{ url }}/amazon-ssm-agent.rpm"
     disable_gpg_check: "{{ disable_gpg_check }}"
     state: present
@@ -31,8 +35,7 @@
   register: install_result
   retries: 3
   until: install_result is success
-  when:
-    - ansible_os_family == "RedHat"
+  when: ansible_os_family == 'RedHat'
 
 - name: Import GPG key for Debian family.
   ansible.builtin.apt_key:
@@ -46,13 +49,13 @@
 - name: Install deb file for Debian family.
   ansible.builtin.apt:
     deb: "https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_{{ url }}/amazon-ssm-agent.deb"
-  notify: restart amazon-ssm-agent
+  notify: Restart amazon-ssm-agent.
   tags:
     - install_ssm_agent
   register: install_result
   retries: 3
   until: install_result is success
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == 'Debian'
 
 - name: Register instance with Systems Manager.
   ansible.builtin.include_tasks: register.yml
@@ -64,7 +67,7 @@
     - aws_ssm_activation_id is defined
     - not aws_ssm_activation_id == ''
 
-- name: Enable and start service.
+- name: Enable the amazon-ssm-agent service.
   ansible.builtin.service:
     name: amazon-ssm-agent
     enabled: true

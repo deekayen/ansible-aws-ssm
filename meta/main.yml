@@ -1,31 +1,29 @@
 ---
-
 galaxy_info:
-  role_name: aws_ssm
   namespace: deekayen
-  author: Eric Ho
+  role_name: aws_ssm
+  author: David Norman
   description: Fork of dhoeric to install AWS EC2 Systems Manager (SSM) agent.
 
+  github_branch: main
   issue_tracker_url: https://github.com/deekayen/ansible-aws-ssm/issues
 
   license: MIT
-
-  min_ansible_version: '2.13'
-
-  github_branch: main
+  min_ansible_version: "2.15"
 
   platforms:
     - name: EL
       versions:
-        - all
+        - "8"
+        - "9"
     - name: Debian
       versions:
-        - buster
         - bullseye
+        - bookworm
     - name: Ubuntu
       versions:
-        - focal
         - jammy
+        - noble
 
   galaxy_tags:
     - cloud
@@ -33,5 +31,7 @@ galaxy_info:
     - application
     - aws
     - ec2
+    - ssm
+    - agent
 
 dependencies: []

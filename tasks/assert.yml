@@ -1,0 +1,36 @@
+---
+- name: Assert url names a published amazon-ssm-agent architecture.
+  ansible.builtin.assert:
+    that:
+      - url in ['amd64', '386', 'arm', 'arm64']
+    fail_msg: "url must be one of amd64, 386, arm, or arm64, got: {{ url }}"
+    quiet: true
+
+- name: Assert gpg_key_url is an HTTP(S) URL.
+  ansible.builtin.assert:
+    that:
+      - gpg_key_url is match('^https?://')
+    fail_msg: "gpg_key_url must start with http:// or https://, got: {{ gpg_key_url }}"
+    quiet: true
+
+- name: Assert gpg_key_fingerprint is a full 40-hex-digit fingerprint.
+  ansible.builtin.assert:
+    that:
+      - gpg_key_fingerprint | replace(' ', '') is match('^[0-9a-fA-F]{40}$')
+    fail_msg: "gpg_key_fingerprint must be a 40 hex digit key fingerprint, got: {{ gpg_key_fingerprint }}"
+    quiet: true
+
+- name: Assert aws_ssm_ec2_region is set when activation is requested.
+  ansible.builtin.assert:
+    that:
+      - aws_ssm_ec2_region is defined
+      - aws_ssm_ec2_region | length > 0
+    fail_msg: >-
+      aws_ssm_activation_code and aws_ssm_activation_id are set, so
+      aws_ssm_ec2_region must also be set to register the managed instance.
+    quiet: true
+  when:
+    - aws_ssm_activation_code is defined
+    - aws_ssm_activation_code | length > 0
+    - aws_ssm_activation_id is defined
+    - aws_ssm_activation_id | length > 0

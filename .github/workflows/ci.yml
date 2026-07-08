@@ -6,11 +6,25 @@ name: CI
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: 'deekayen.aws_ssm'
-
 jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible-lint
+
+      - name: Lint code.
+        run: ansible-lint --profile production
 
   molecule:
     name: Molecule
@@ -18,23 +32,20 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux8
+          - rockylinux9
           - ubuntu2204
-          - debian11
 
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
-        with:
-          path: 'deekayen.aws_ssm'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install test dependencies.
-        run: pip3 install ansible molecule molecule-plugins[docker] docker pytest-testinfra
+        run: pip3 install ansible-core molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
         run: molecule test
