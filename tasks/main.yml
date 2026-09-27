@@ -7,13 +7,13 @@
 - name: Change URL destination for 32bit arch.
   ansible.builtin.set_fact:
     url: '386'
-  when: ansible_userspace_bits == '32'
+  when: ansible_facts.userspace_bits == '32'
 
 - name: Change URL destination for 64-bit ARM.
   ansible.builtin.set_fact:
     url: arm64
   when:
-    - ansible_architecture == 'aarch64'
+    - ansible_facts.architecture == 'aarch64'
     - url == 'amd64'
 
 - name: Install pre-required packages.
@@ -33,7 +33,7 @@
   tags:
     - import_rpm_key
   when:
-    - ansible_os_family == 'RedHat'
+    - ansible_facts.os_family == 'RedHat'
     - gpg_key_url | length == 0
 
 - name: Import GPG key for Redhat family.
@@ -43,7 +43,7 @@
     state: present
   tags:
     - import_rpm_key
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts.os_family == 'RedHat'
 
 - name: Install RPM file for Redhat family.
   ansible.builtin.dnf:
@@ -55,7 +55,7 @@
   register: install_result
   retries: 3
   until: install_result is success
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts.os_family == 'RedHat'
 
 # apt-key is gone from Debian 13 and Ubuntu 26.04, so trust the key as an
 # apt trusted.gpg.d fragment instead.
@@ -69,7 +69,7 @@
   tags:
     - import_apt_key
   when:
-    - ansible_os_family == 'Debian'
+    - ansible_facts.os_family == 'Debian'
     - gpg_key_url | length == 0
 
 - name: Import GPG key from gpg_key_url for Debian family.
@@ -82,7 +82,7 @@
   tags:
     - import_apt_key
   when:
-    - ansible_os_family == 'Debian'
+    - ansible_facts.os_family == 'Debian'
     - gpg_key_url | length > 0
 
 - name: Install deb file for Debian family.
@@ -94,7 +94,7 @@
   register: install_result
   retries: 3
   until: install_result is success
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
 
 - name: Register instance with Systems Manager.
   ansible.builtin.include_tasks: register.yml
@@ -112,4 +112,4 @@
     enabled: true
   tags:
     - enable_ssm_service
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
