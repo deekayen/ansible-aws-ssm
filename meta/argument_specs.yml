@@ -21,7 +21,7 @@ argument_specs:
         description: >-
           Architecture component of the download URL for the
           amazon-ssm-agent package. Automatically switched to 386 on 32-bit
-          userspace hosts.
+          userspace hosts, and to arm64 on aarch64 hosts when left at amd64.
 
       disable_gpg_check:
         type: bool
@@ -32,12 +32,15 @@ argument_specs:
 
       gpg_key_url:
         type: str
-        default: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2bc7c7c267bbd505eaa491e6dd81a61756baa549"
-        description: URL of Amazon's package signing public key.
+        default: ""
+        description: >-
+          URL of Amazon's package signing public key. Leave empty to use the
+          key bundled with the role (expires 2027-11-25); set it to override
+          the bundled key after AWS rotates it.
 
       gpg_key_fingerprint:
         type: str
-        default: 2bc7c7c267bbd505eaa491e6dd81a61756baa549
+        default: 1c5b395cbe5e74e2f1ca21592784dbf388d19d46
         description: >-
           Full fingerprint of Amazon's package signing key, used to verify
           the imported key.

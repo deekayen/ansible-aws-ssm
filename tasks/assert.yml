@@ -6,11 +6,11 @@
     fail_msg: "url must be one of amd64, 386, arm, or arm64, got: {{ url }}"
     quiet: true
 
-- name: Assert gpg_key_url is an HTTP(S) URL.
+- name: Assert gpg_key_url is empty or an HTTP(S) URL.
   ansible.builtin.assert:
     that:
-      - gpg_key_url is match('^https?://')
-    fail_msg: "gpg_key_url must start with http:// or https://, got: {{ gpg_key_url }}"
+      - gpg_key_url | length == 0 or gpg_key_url is match('^https?://')
+    fail_msg: "gpg_key_url must be empty or start with http:// or https://, got: {{ gpg_key_url }}"
     quiet: true
 
 - name: Assert gpg_key_fingerprint is a full 40-hex-digit fingerprint.

@@ -9,6 +9,13 @@
     url: '386'
   when: ansible_userspace_bits == '32'
 
+- name: Change URL destination for 64-bit ARM.
+  ansible.builtin.set_fact:
+    url: arm64
+  when:
+    - ansible_architecture == 'aarch64'
+    - url == 'amd64'
+
 - name: Install pre-required packages.
   ansible.builtin.package:
     name: gnupg
@@ -16,9 +23,22 @@
   tags:
     - install_gnupg
 
+- name: Copy the bundled signing key for Redhat family.
+  ansible.builtin.copy:
+    src: amazon-ssm-agent.gpg
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-amazon-ssm-agent
+    owner: root
+    group: root
+    mode: "0644"
+  tags:
+    - import_rpm_key
+  when:
+    - ansible_os_family == 'RedHat'
+    - gpg_key_url | length == 0
+
 - name: Import GPG key for Redhat family.
   ansible.builtin.rpm_key:
-    key: "{{ gpg_key_url }}"
+    key: "{{ gpg_key_url if gpg_key_url | length > 0 else '/etc/pki/rpm-gpg/RPM-GPG-KEY-amazon-ssm-agent' }}"
     fingerprint: "{{ gpg_key_fingerprint }}"
     state: present
   tags:
@@ -37,14 +57,33 @@
   until: install_result is success
   when: ansible_os_family == 'RedHat'
 
-- name: Import GPG key for Debian family.
-  ansible.builtin.apt_key:
-    url: "{{ gpg_key_url }}"
-    id: "{{ gpg_key_fingerprint }}"
-    state: present
+# apt-key is gone from Debian 13 and Ubuntu 26.04, so trust the key as an
+# apt trusted.gpg.d fragment instead.
+- name: Import the bundled GPG key for Debian family.
+  ansible.builtin.copy:
+    src: amazon-ssm-agent.gpg
+    dest: /etc/apt/trusted.gpg.d/amazon-ssm-agent.asc
+    owner: root
+    group: root
+    mode: "0644"
   tags:
     - import_apt_key
-  when: ansible_os_family == 'Debian'
+  when:
+    - ansible_os_family == 'Debian'
+    - gpg_key_url | length == 0
+
+- name: Import GPG key from gpg_key_url for Debian family.
+  ansible.builtin.get_url:
+    url: "{{ gpg_key_url }}"
+    dest: /etc/apt/trusted.gpg.d/amazon-ssm-agent.asc
+    owner: root
+    group: root
+    mode: "0644"
+  tags:
+    - import_apt_key
+  when:
+    - ansible_os_family == 'Debian'
+    - gpg_key_url | length > 0
 
 - name: Install deb file for Debian family.
   ansible.builtin.apt:
